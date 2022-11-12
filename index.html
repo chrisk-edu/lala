@@ -1,12 +1,4 @@
 <html>
   <script src="/soundplayer.js"></script>
-  <script>
-
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audio = new AudioContext();
-
-    (new SoundPlayer(audio)).play(440.0, 0.8, "sine").stop(0.5);
-
-  </script>
-  <button onclick='(new SoundPlayer(audio)).play(440.0, 0.8, "sine").stop(0.5);'>Run Example &#x266A;</button>
+  <button onclick='(new SoundPlayer(audio)).play(440.0, 0.8, "sine").stop(3);'>Run Example 440hZ</button>
 </html>
