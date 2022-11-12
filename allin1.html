@@ -1,0 +1,73 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+<body>
+<br />
+
+<button onclick="go(432, 0.5)">Go at 432 hz</button>
+<button onclick="go(880, 0.3)">Go faster and at 880 hz</button>
+<button onclick="go(1250, 0.1)">Go really fast and high</button>
+<button onclick="halt()">Stop going</button>
+
+<br />  
+<script>
+var audioContext = new AudioContext();
+var gainNode = audioContext.createGain();
+gainNode.connect(audioContext.destination);
+var playerNode = null; // Initialized later.
+
+function createLoop(audioContext, toneFrequency, toneDuration, loopDuration) {
+  const arrayBuffer = audioContext.createBuffer(
+    1,
+    audioContext.sampleRate * loopDuration,
+    audioContext.sampleRate,
+  );
+  const channel = arrayBuffer.getChannelData(0); // mono, only deal with single channel
+  const toneDurationInSamples = Math.floor(audioContext.sampleRate * toneDuration);
+  const phasePerSample = (Math.PI * 2 * toneFrequency) / audioContext.sampleRate;
+  let audible = true;
+  for (let i = 0; i < arrayBuffer.length; i++) {
+    if (audible) {
+      let value = Math.sin(phasePerSample * i);
+      channel[i] = value;
+      // We might slightly overshoot the tone's requested duration
+      // but we need to wait for the oscillation to be near zero
+      // to avoid an audible click (when the signal "snaps" from an arbitrary
+      // value to zero).
+      if (i >= toneDurationInSamples && Math.abs(value) < 0.02) {
+        audible = false;
+      }
+    } else {
+      channel[i] = 0; // Silence
+    }
+  }
+  return arrayBuffer;
+}
+
+function go(hz, length) {
+  halt(); // Remove the old player node. We couldn't modify the buffer anyway.
+  playerNode = audioContext.createBufferSource();
+  playerNode.loop = true;
+  playerNode.connect(gainNode);
+
+  const buf = createLoop(audioContext, hz, length / 5, length);
+  playerNode.buffer = buf;
+  playerNode.start();
+  audioContext.resume();
+}
+
+function halt() {
+  if (playerNode) {
+    playerNode.stop();
+    playerNode.disconnect();
+    playerNode = null;
+  }
+}
+function handleVolumeChange(volume) {
+  gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
+}
+</script>
+</body>
+</html>
