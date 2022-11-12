@@ -49,7 +49,7 @@ function createLoop(audioContext, toneFrequency, toneDuration, loopDuration) {
 function go(hz, length) {
   halt(); // Remove the old player node. We couldn't modify the buffer anyway.
   playerNode = audioContext.createBufferSource();
-  playerNode.loop = true;
+  playerNode.loop = false;
   playerNode.connect(gainNode);
 
   //const buf = createLoop(audioContext, hz, length / 5, length);
