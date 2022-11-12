@@ -1,14 +1,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
+<title>Laura Kutscherauer - DFK - Research Project</title>
 </head>
 <body>
 <br />
 
-<button onclick="go(432, 0.5)">Go at 432 hz</button>
-<button onclick="go(880, 0.3)">Go faster and at 880 hz</button>
-<button onclick="go(1250, 0.1)">Go really fast and high</button>
+<button onclick="go(432, 5)">Go at 432 hz</button>
+<button onclick="go(880, 5)">Go faster and at 880 hz</button>
+<button onclick="go(1250, 3)">Go really fast and high</button>
 <button onclick="halt()">Stop going</button>
 
 <br />  
@@ -52,7 +52,7 @@ function go(hz, length) {
   playerNode.loop = true;
   playerNode.connect(gainNode);
 
-  const buf = createLoop(audioContext, hz, length / 5, length);
+  //const buf = createLoop(audioContext, hz, length / 5, length);
   playerNode.buffer = buf;
   playerNode.start();
   audioContext.resume();
